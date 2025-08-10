@@ -1,0 +1,17 @@
+<h2 mat-dialog-title>{{ data ? 'Edit Type' : 'New Type' }}</h2>
+<mat-dialog-content>
+  <form class="form" (ngSubmit)="save()" #form="ngForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput name="name" [(ngModel)]="model.name" required />
+    </mat-form-field>
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Code</mat-label>
+      <input matInput name="code" [(ngModel)]="model.code" required />
+    </mat-form-field>
+    <div class="actions">
+      <button mat-button mat-dialog-close type="button">Cancel</button>
+      <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Save</button>
+    </div>
+  </form>
+</mat-dialog-content>

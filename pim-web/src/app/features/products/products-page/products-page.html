@@ -1,0 +1,55 @@
+<div class="page">
+  <mat-toolbar color="primary">
+    <span>Products</span>
+    <span class="spacer"></span>
+    <button mat-raised-button color="accent" (click)="openCreate()">New Product</button>
+  </mat-toolbar>
+
+  <div class="content">
+    <mat-card>
+      <p-table [value]="rows()" [tableStyle]="{ width: '100%' }" [scrollable]="true" scrollHeight="60vh">
+        <ng-template pTemplate="header">
+          <tr>
+            <th pSortableColumn="name">Name <p-sortIcon field="name" /></th>
+            <th pSortableColumn="type">Type <p-sortIcon field="type" /></th>
+            <th pSortableColumn="code">Code <p-sortIcon field="code" /></th>
+            <th pSortableColumn="status">Status <p-sortIcon field="status" /></th>
+            <th style="width: 180px"></th>
+          </tr>
+          <tr>
+            <th>
+              <input pInputText type="text" pColumnFilter field="name" placeholder="Search name" style="width: 100%" />
+            </th>
+            <th>
+              <input pInputText type="text" pColumnFilter field="type" placeholder="Search type" style="width: 100%" />
+            </th>
+            <th>
+              <input pInputText type="text" pColumnFilter field="code" placeholder="Search code" style="width: 100%" />
+            </th>
+            <th></th>
+            <th></th>
+          </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-row>
+          <tr *ngIf="isGroup(row)" class="group-row">
+            <td colspan="5"><strong>{{ (row).typeName }}</strong></td>
+          </tr>
+          <tr *ngIf="!isGroup(row)">
+            <td>{{ (row).name }}</td>
+            <td>{{ typeName((row).productTypeId) }}</td>
+            <td>{{ (row).code }}</td>
+                          <td>
+              <p-tag [severity]="(row).isActive ? 'success' : 'danger'" [value]="(row).isActive ? 'Active' : 'Inactive'" />
+            </td>
+            <td>
+              <button mat-button color="primary" (click)="openEdit(row)">Edit</button>
+              <button mat-button color="warn" *ngIf="(row).isActive" (click)="deactivate(row)">Deactivate</button>
+              <button mat-button color="accent" *ngIf="!(row).isActive" (click)="activate(row)">Activate</button>
+            </td>
+          </tr>
+        </ng-template>
+      </p-table>
+    </mat-card>
+  </div>
+</div>

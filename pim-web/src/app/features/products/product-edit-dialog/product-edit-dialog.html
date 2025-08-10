@@ -1,0 +1,53 @@
+<h2 mat-dialog-title>{{ data ? 'Edit Product' : 'New Product' }}</h2>
+<mat-dialog-content>
+  <form class="form" (ngSubmit)="save()" #form="ngForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput name="name" [(ngModel)]="model.name" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Code</mat-label>
+      <input matInput name="code" [(ngModel)]="model.code" />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Description</mat-label>
+      <textarea matInput name="description" [(ngModel)]="model.description" rows="3"></textarea>
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Product Type</mat-label>
+      <mat-select name="productTypeId" [(ngModel)]="model.productTypeId" (selectionChange)="onTypeChange()">
+        <mat-option [value]="null">None</mat-option>
+        <mat-option *ngFor="let t of types()" [value]="t.id">{{ t.name }}</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <ng-container *ngIf="model.productTypeId">
+      <div *ngFor="let p of props()" class="dyn">
+        <mat-form-field appearance="outline" class="full-width" *ngIf="p.dataType==='Text'">
+          <mat-label>{{ p.name }}</mat-label>
+          <input matInput [name]="p.key" [(ngModel)]="attrs[p.key]" [required]="p.isRequired" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" *ngIf="p.dataType==='Number'">
+          <mat-label>{{ p.name }}</mat-label>
+          <input matInput type="number" [name]="p.key" [(ngModel)]="attrs[p.key]" [required]="p.isRequired" [min]="p.min ?? null" [max]="p.max ?? null" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline" class="full-width" *ngIf="p.dataType==='Enum'">
+          <mat-label>{{ p.name }}</mat-label>
+          <mat-select [name]="p.key" [(ngModel)]="attrs[p.key]" [required]="p.isRequired">
+            <mat-option *ngFor="let opt of optionsFor(p)" [value]="opt">{{ opt }}</mat-option>
+          </mat-select>
+        </mat-form-field>
+      </div>
+    </ng-container>
+
+    <div class="actions">
+      <button mat-button mat-dialog-close type="button">Cancel</button>
+      <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Save</button>
+    </div>
+  </form>
+</mat-dialog-content>

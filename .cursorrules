@@ -1,0 +1,19 @@
+## Next Goals (Roadmap)
+- Search, advanced filtering, and pagination for lists
+- Bulk operations; CSV/Excel import-export
+- Audit log of changes for product and attributes
+- AuthN/AuthZ (roles) for admin vs. editor
+- Media attachments for products (images/files)
+- i18n and units/currency support
+- Better UX for dynamic fields (masks, inline errors)
+- Performance: virtual scroll and server-side paging/filtering
+- Tests: unit/integration/E2E (Playwright)
+- OpenAPI docs and typed clients
+- CI/CD, Docker, Dev Containers
+- Seed/demo data; backup & migration strategy
+- Observability (logs/health/metrics)
+- API versioning and compatibility rules
+- HTTP caching/ETags
+- Integrations/webhooks
+- Multi-tenant design options
+- Theme variants & accessibility improvements 

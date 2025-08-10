@@ -1,0 +1,62 @@
+<h2 mat-dialog-title>{{ data.prop ? 'Edit Property' : 'New Property' }}</h2>
+<mat-dialog-content>
+  <form class="form" (ngSubmit)="save()" #form="ngForm">
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Name</mat-label>
+      <input matInput name="name" [(ngModel)]="model.name" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Key</mat-label>
+      <input matInput name="key" [(ngModel)]="model.key" required />
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Data Type</mat-label>
+      <mat-select name="dataType" [(ngModel)]="model.dataType" required>
+        <mat-option value="Enum">Enum</mat-option>
+        <mat-option value="Number">Number</mat-option>
+        <mat-option value="Text">Text</mat-option>
+        <mat-option value="Boolean">Boolean</mat-option>
+        <mat-option value="Date">Date</mat-option>
+      </mat-select>
+    </mat-form-field>
+
+    <mat-checkbox name="isRequired" [(ngModel)]="model.isRequired">Required</mat-checkbox>
+
+    <div *ngIf="isEnum">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Options (JSON array)</mat-label>
+        <textarea matInput name="optionsJson" [(ngModel)]="model.optionsJson" rows="3"></textarea>
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="isNumber" class="row">
+      <mat-form-field appearance="outline" class="half">
+        <mat-label>Min</mat-label>
+        <input matInput name="min" [(ngModel)]="model.min" type="number" />
+      </mat-form-field>
+      <mat-form-field appearance="outline" class="half">
+        <mat-label>Max</mat-label>
+        <input matInput name="max" [(ngModel)]="model.max" type="number" />
+      </mat-form-field>
+    </div>
+
+    <div *ngIf="isText">
+      <mat-form-field appearance="outline" class="full-width">
+        <mat-label>Regex</mat-label>
+        <input matInput name="regex" [(ngModel)]="model.regex" />
+      </mat-form-field>
+    </div>
+
+    <mat-form-field appearance="outline" class="full-width">
+      <mat-label>Sort Order</mat-label>
+      <input matInput name="sortOrder" [(ngModel)]="model.sortOrder" type="number" />
+    </mat-form-field>
+
+    <div class="actions">
+      <button mat-button mat-dialog-close type="button">Cancel</button>
+      <button mat-raised-button color="primary" [disabled]="form.invalid" type="submit">Save</button>
+    </div>
+  </form>
+</mat-dialog-content>
