@@ -23,8 +23,9 @@ COPY --from=api-build /app/publish .
 # Copy Angular build into wwwroot
 COPY --from=web-build /src/pim-web/dist/pim-web ./wwwroot
 # Expose default port
+# Respect Render's dynamic PORT if provided
+ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT:-8080}
 EXPOSE 8080
-ENV ASPNETCORE_URLS=http://0.0.0.0:8080
 # Optional: set environment to Production
 ENV ASPNETCORE_ENVIRONMENT=Production
 ENTRYPOINT ["dotnet", "Pim.Api.dll"] 
