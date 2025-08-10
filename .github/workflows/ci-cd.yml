@@ -1,0 +1,63 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20.x'
+          cache: 'npm'
+          cache-dependency-path: |
+            pim-web/package-lock.json
+
+      - name: Install web deps
+        working-directory: pim-web
+        run: npm ci
+
+      - name: Build Angular (prod)
+        working-directory: pim-web
+        run: npm run build -- --configuration production
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '9.0.x'
+
+      - name: Restore & Build API
+        working-directory: Pim.Api
+        run: |
+          dotnet restore
+          dotnet build -c Release --no-restore
+
+      - name: Docker Build
+        run: docker build -t generic-pim:ci .
+
+  deploy-render:
+    needs: build-test
+    runs-on: ubuntu-latest
+    if: ${{ github.ref == 'refs/heads/main' }}
+    steps:
+      - name: Trigger Render Deploy (optional)
+        env:
+          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
+        run: |
+          if [ -n "$RENDER_DEPLOY_HOOK" ]; then
+            echo "Triggering Render deploy via hook..."
+            curl -fsSL -X POST "$RENDER_DEPLOY_HOOK"
+          else
+            echo "RENDER_DEPLOY_HOOK not set; skipping deploy trigger."
+          fi 
