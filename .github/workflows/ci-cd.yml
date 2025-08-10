@@ -1,4 +1,4 @@
-name: CI/CD
+name: CI
 
 on:
   push:
@@ -43,21 +43,5 @@ jobs:
           dotnet restore
           dotnet build -c Release --no-restore
 
-      - name: Docker Build
-        run: docker build -t generic-pim:ci .
-
-  deploy-render:
-    needs: build-test
-    runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/main' }}
-    steps:
-      - name: Trigger Render Deploy (optional)
-        env:
-          RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }}
-        run: |
-          if [ -n "$RENDER_DEPLOY_HOOK" ]; then
-            echo "Triggering Render deploy via hook..."
-            curl -fsSL -X POST "$RENDER_DEPLOY_HOOK"
-          else
-            echo "RENDER_DEPLOY_HOOK not set; skipping deploy trigger."
-          fi 
+      - name: Docker Build (smoke)
+        run: docker build -t generic-pim:ci . 
