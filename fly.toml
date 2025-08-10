@@ -10,11 +10,8 @@ kill_timeout = "5s"
 [env]
   ASPNETCORE_ENVIRONMENT = "Production"
   ASPNETCORE_URLS = "http://0.0.0.0:8080"
-  ConnectionStrings__DefaultConnection = "Data Source=data/pim.db"
-
-[[mounts]]
-  source = "pim_data"
-  destination = "/app/data"
+  # Use ephemeral SQLite under /tmp to avoid volumes
+  ConnectionStrings__DefaultConnection = "Data Source=/tmp/pim.db"
 
 [[services]]
   internal_port = 8080
