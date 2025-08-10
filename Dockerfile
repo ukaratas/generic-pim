@@ -20,8 +20,8 @@ FROM mcr.microsoft.com/dotnet/aspnet:9.0-alpine
 WORKDIR /app
 # Copy published API
 COPY --from=api-build /app/publish .
-# Copy Angular build into wwwroot
-COPY --from=web-build /src/pim-web/dist/pim-web ./wwwroot
+# Copy Angular build into wwwroot (flatten browser output)
+COPY --from=web-build /src/pim-web/dist/pim-web/browser ./wwwroot
 # Expose default port
 # Respect Render's dynamic PORT if provided
 ENV ASPNETCORE_URLS=http://0.0.0.0:${PORT:-8080}
