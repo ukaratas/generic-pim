@@ -4,6 +4,7 @@ using Pim.Api.Models;
 using System.Text.Json.Serialization;
 using System.IO;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Builder;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,7 +43,11 @@ using (var scope = app.Services.CreateScope())
 }
 
 // Serve SPA static files (Angular build will be copied to wwwroot in Docker image)
-app.UseDefaultFiles();
+var defaultFiles = new DefaultFilesOptions();
+defaultFiles.DefaultFileNames.Clear();
+defaultFiles.DefaultFileNames.Add("index.html");
+defaultFiles.DefaultFileNames.Add("browser/index.html");
+app.UseDefaultFiles(defaultFiles);
 app.UseStaticFiles();
 
 var products = app.MapGroup("/api/products");
@@ -253,13 +258,21 @@ props.MapPut("{propId:int}/activate", async (int productTypeId, int propId, AppD
 
 app.MapGet("/api/health", () => "ok");
 
-// SPA fallback to index.html (explicit)
+// SPA fallback to index.html (index.html or browser/index.html)
 app.MapFallback(async context =>
 {
     var webRoot = app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot");
-    var indexPath = Path.Combine(webRoot, "index.html");
+    var primary = Path.Combine(webRoot, "index.html");
+    var alt = Path.Combine(webRoot, "browser", "index.html");
+    var file = File.Exists(primary) ? primary : alt;
+    if (!File.Exists(file))
+    {
+        context.Response.StatusCode = 404;
+        await context.Response.WriteAsync("SPA index.html not found");
+        return;
+    }
     context.Response.ContentType = "text/html; charset=utf-8";
-    await context.Response.SendFileAsync(indexPath);
+    await context.Response.SendFileAsync(file);
 });
 
 app.Run();
