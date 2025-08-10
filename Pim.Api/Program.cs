@@ -249,7 +249,7 @@ props.MapPut("{propId:int}/activate", async (int productTypeId, int propId, AppD
     return Results.NoContent();
 });
 
-app.MapGet("/", () => "PIM API running");
+app.MapGet("/api/health", () => "ok");
 
 // SPA fallback to index.html
 app.MapFallbackToFile("/index.html");
