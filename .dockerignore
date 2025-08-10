@@ -1,0 +1,16 @@
+# General
+.git
+.gitignore
+.DS_Store
+
+# Node/Angular
+pim-web/node_modules
+pim-web/.angular
+pim-web/dist
+
+# .NET
+**/bin
+**/obj
+
+# Local DB data
+data/*.db* 

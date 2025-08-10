@@ -39,6 +39,10 @@ using (var scope = app.Services.CreateScope())
     db.Database.Migrate();
 }
 
+// Serve SPA static files (Angular build will be copied to wwwroot in Docker image)
+app.UseDefaultFiles();
+app.UseStaticFiles();
+
 var products = app.MapGroup("/api/products");
 
 products.MapGet("", async (AppDbContext db) =>
@@ -246,5 +250,8 @@ props.MapPut("{propId:int}/activate", async (int productTypeId, int propId, AppD
 });
 
 app.MapGet("/", () => "PIM API running");
+
+// SPA fallback to index.html
+app.MapFallbackToFile("/index.html");
 
 app.Run();
