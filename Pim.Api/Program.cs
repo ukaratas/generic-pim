@@ -2,6 +2,8 @@ using Microsoft.EntityFrameworkCore;
 using Pim.Api.Data;
 using Pim.Api.Models;
 using System.Text.Json.Serialization;
+using System.IO;
+using Microsoft.AspNetCore.Http;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -251,7 +253,13 @@ props.MapPut("{propId:int}/activate", async (int productTypeId, int propId, AppD
 
 app.MapGet("/api/health", () => "ok");
 
-// SPA fallback to index.html
-app.MapFallbackToFile("/index.html");
+// SPA fallback to index.html (explicit)
+app.MapFallback(async context =>
+{
+    var webRoot = app.Environment.WebRootPath ?? Path.Combine(app.Environment.ContentRootPath, "wwwroot");
+    var indexPath = Path.Combine(webRoot, "index.html");
+    context.Response.ContentType = "text/html; charset=utf-8";
+    await context.Response.SendFileAsync(indexPath);
+});
 
 app.Run();
