@@ -21,7 +21,7 @@ WORKDIR /app
 # Copy published API
 COPY --from=api-build /app/publish .
 # Copy Angular build into wwwroot
-COPY --from=web-build /src/pim-web/dist/browser ./wwwroot
+COPY --from=web-build /src/pim-web/dist/pim-web ./wwwroot
 # Expose default port
 EXPOSE 8080
 ENV ASPNETCORE_URLS=http://0.0.0.0:8080
